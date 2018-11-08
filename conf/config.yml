@@ -1,0 +1,18 @@
+
+app:
+  host: 0.0.0.0
+  port: 5000
+
+tokenizer: Jieba
+Jieba:
+  # [full,precision]
+  mode: precision
+
+word_bags:
+- name: A
+  type: file
+  content: /datasets/wordA.txt
+
+- name: B
+  type: url
+  content: http://cloudrtb-paas-public-test.cdn.bcebos.com/wordB.txt
