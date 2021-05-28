@@ -29,8 +29,8 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 handler.setLevel(logging.DEBUG)
 app.logger.addHandler(handler)
-# app.logger.setLevel(logging.DEBUG)
-app.logger.setLevel(logging.INFO)
+app.logger.setLevel(logging.DEBUG)
+# app.logger.setLevel(logging.INFO)
 
 yml_config = yaml.load(open(ROOT_PATH + '/conf/config.yml', 'r'))
 
@@ -58,6 +58,7 @@ def load_tokenizer():
     clazz = getattr(getattr(module, tokenizer_conf), tokenizer_conf)
     obj = clazz(yml_config[tokenizer_conf])
     app.logger.info("loaded tokenizer: %s", tokenizer_conf)
+    runnable=1
     return Tokenizer(obj)
 
 

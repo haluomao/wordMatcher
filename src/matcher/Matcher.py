@@ -6,7 +6,7 @@ Matcher, match keywords in word bags.
 Date: 2018-10-29
 Author: maofagui
 """
-from src.model.WordBag import *
+from model.WordBag import *
 
 
 class Matcher(object):

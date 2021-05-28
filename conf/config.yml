@@ -13,6 +13,6 @@ word_bags:
   type: file
   content: /datasets/wordA.txt
 
-- name: B
-  type: url
-  content: http://cloudrtb-paas-public-test.cdn.bcebos.com/wordB.txt
+#- name: B
+#  type: url
+#  content: http://cloudrtb-paas-public-test.cdn.bcebos.com/wordB.txt
