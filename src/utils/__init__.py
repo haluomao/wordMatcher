@@ -17,5 +17,17 @@ def read_csv(file_path):
         # print(row[0])
         pass
 
+
+def singleton(cls):
+    """Singleton decorator"""
+    _instance = {}
+
+    def _singleton(*args, **kargs):
+        if cls not in _instance:
+            _instance[cls] = cls(*args, **kargs)
+        return _instance[cls]
+
+    return _singleton
+
 if __name__ == '__main__':
     print(convent_to_simplified('憂郁的臺灣烏龜'))
