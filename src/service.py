@@ -19,7 +19,8 @@ from model.WordBag import WordBag
 from matcher.Matcher import Matcher
 from tokenizer.Tokenizer import Tokenizer
 
-ROOT_PATH = '../'
+#ROOT_PATH = '../'
+ROOT_PATH = 'G:/T_WordMatch/wordMatcher'
 
 app = Flask(__name__)
 handler = TimedRotatingFileHandler(ROOT_PATH + '/log/word-matcher.log')
@@ -40,7 +41,7 @@ def parse_content(path, path_type):
         with urllib.request.urlopen(path) as file:
             content = file.read().decode('utf-8')
     else:
-        with open(ROOT_PATH + path, 'r') as file:
+        with open(ROOT_PATH + path, 'r',encoding='utf-8') as file:
             content = file.read()
     return set(content.splitlines())
 
