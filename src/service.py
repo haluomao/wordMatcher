@@ -17,9 +17,11 @@ from logging.handlers import TimedRotatingFileHandler
 
 from model.WordBag import WordBag
 from matcher.Matcher import Matcher
+from matcher.Matcher import FastMatcher
+from hotword.HotWordCache import HotWordCache
 from tokenizer.Tokenizer import Tokenizer
 
-#ROOT_PATH = '../'
+# ROOT_PATH = '../'
 ROOT_PATH = 'G:/T_WordMatch/wordMatcher'
 
 app = Flask(__name__)
@@ -41,7 +43,7 @@ def parse_content(path, path_type):
         with urllib.request.urlopen(path) as file:
             content = file.read().decode('utf-8')
     else:
-        with open(ROOT_PATH + path, 'r',encoding='utf-8') as file:
+        with open(ROOT_PATH + path, 'r', encoding='utf-8') as file:
             content = file.read()
     return set(content.splitlines())
 
@@ -59,7 +61,7 @@ def load_tokenizer():
     clazz = getattr(getattr(module, tokenizer_conf), tokenizer_conf)
     obj = clazz(yml_config[tokenizer_conf])
     app.logger.info("loaded tokenizer: %s", tokenizer_conf)
-    runnable=1
+    runnable = 1
     return Tokenizer(obj)
 
 
@@ -92,6 +94,8 @@ def load_word_bags():
 tokenizer = load_tokenizer()
 word_bags = load_word_bags()
 matcher = Matcher(word_bags)
+fastMacher = FastMatcher(word_bags)
+hotWordCache=HotWordCache(lifecycle=7,slot_name_prefix='group')
 
 
 @app.route('/reload', methods=['PUT'])
@@ -147,6 +151,60 @@ def match():
         app.logger.error("result for (%s) is: %s", request_body, 'failed with message' + str(e))
         return jsonify({
             'status': 'failed',
+            'code': 'InternalServerError',
+            'message': str(e)
+        }), 500
+
+
+@app.route('/fastmatch', methods=['POST'])
+def fastmatch():
+    """
+    input json:
+    {
+        "text": "The quick brown fox jumps over a lazy dog."
+    }
+    """
+    request_body = ''
+    try:
+        request_body = request.json
+        app.logger.info("Request.json: %s", request_body)
+        text = request_body['text']
+        keywords = set(tokenizer.cut(text))
+        app.logger.debug("keywords:%s", keywords)
+        res = fastMacher.match_all(keywords)
+        app.logger.debug("res:%s", res)
+        return jsonify({
+            'status': 'success',
+            'data': res
+        }), 200
+    except Exception as e:
+        app.logger.error("result for (%s) is: %s", request_body, 'failed with message' + str(e))
+        return jsonify({
+            'status': 'failed',
+            'code': 'InternalServerError',
+            'message': str(e)
+        }), 500
+
+
+@app.route('/topword', methods=['GET'])
+def topmatch():
+    """
+    reload top tword
+    :return: top n
+    """
+    request.get()
+    app.logger.info("reloading top word .")
+    try:
+        topWord=hotWordCache.top()
+        app.logger.debug("topWord=:%s", topWord)
+        return jsonify({
+            'top hot word': topWord,
+            'status': 'success'
+        }), 200
+    except Exception as e:
+        app.logger.error("reload error.")
+        return jsonify({
+            'status': 'success',
             'code': 'InternalServerError',
             'message': str(e)
         }), 500

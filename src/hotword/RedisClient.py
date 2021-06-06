@@ -28,7 +28,7 @@ class RedisClient(object):
         Load key ,word
         :return: word score
         '''
-        self._client.expire(key,expire_sec)
+        self._client.expire(key, expire_sec)
         return self._client.zadd(key, {member: score}, nx=False, xx=False, ch=False, incr=True)
 
     def zrange(self, key, start, stop, with_score=''):
@@ -42,8 +42,10 @@ class RedisClient(object):
         """
         # https://blog.csdn.net/weixin_41201496/article/details/105187487
         return self._client.zrevrange(key, start, stop, with_score)
-    def expire(self,key,time):
-        return self._client.expire(key,time)
+
+    def expire(self, key, time):
+        return self._client.expire(key, time)
+
 
 redis_cli = RedisClient(host="127.0.0.1", port=6379)
 
@@ -52,4 +54,4 @@ if __name__ == '__main__':
     print(redis_cli.get('a').decode('utf-8'))
     print(redis_cli.zrevrange('b', 0, 2))
     print(redis_cli.zadd('b', 1, str('ef')))
-    print(redis_cli.expire('b',10))
+    print(redis_cli.expire('b', 10))

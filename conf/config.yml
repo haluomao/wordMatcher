@@ -13,6 +13,9 @@ word_bags:
 - name: A
   type: file
   content: /datasets/wordA.txt
+- name: B
+  type: file
+  content: /datasets/wordB.txt
 
 #- name: B
 #  type: url

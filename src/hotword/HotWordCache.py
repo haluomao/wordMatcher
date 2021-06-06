@@ -7,7 +7,7 @@ Date: 2021-05-28
 Author: maofagui
 """
 from enum import Enum
-from RedisClient import redis_cli
+from hotword.RedisClient import redis_cli
 import datetime
 
 
@@ -48,11 +48,11 @@ class HotWordCache(object):
                 else:
                     statistics_word_dict[word] = score
         word_sort_list = sorted(statistics_word_dict.items(), key=lambda x: x[1], reverse=True)
-        for ranking,hot_word in enumerate(word_sort_list):
+        for ranking, hot_word in enumerate(word_sort_list):
             if with_score:
-                word_top_list.append((hot_word[0].decode('utf-8'), ranking+1))
+                word_top_list.append((hot_word[0].decode('utf-8'), ranking + 1))
             else:
-                word_top_list.append((hot_word[0].decode('utf-8'), int(statistics_word_dict[hot_word[0]]), ranking+1))
+                word_top_list.append((hot_word[0].decode('utf-8'), int(statistics_word_dict[hot_word[0]]), ranking + 1))
         return word_top_list
 
     def _slot_expire_sec(self):
@@ -73,4 +73,5 @@ if __name__ == '__main__':
     print(HotWordCache(slot_name_prefix='group')._all_slot_names())
     print(HotWordCache(slot_name_prefix='group')._slot_expire_sec())
     print(HotWordCache(slot_name_prefix='group').incr("maofa", 1))
+    print(HotWordCache(slot_name_prefix='group').top())
     print(HotWordCache(slot_name_prefix='group').top(with_score=False))
