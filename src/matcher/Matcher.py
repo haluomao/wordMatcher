@@ -52,14 +52,17 @@ class Matcher(object):
         :param keywords: keywords set, like set(['abc', 'def'])
         :return: a map of word bag name and intersection-set, like {'wordBagA': ['abc']}
         """
-        return {word_bag.name: list(word_bag.data & keywords)}
+        bag_word_list = list(word_bag.data & keywords)
+        for bag_word in bag_word_list:
+            hotWordCache.incr(bag_word)
+        return {word_bag.name: bag_word_list}
 
 
 class FastMatcher(object):
     def __init__(self, word_bags):
         self.word_bags = word_bags
 
-    def match_all(self, keywords):
+    def match_first(self, keywords):
         """
         match keywords with all word bags.
 
@@ -98,11 +101,9 @@ class FastMatcher(object):
         :param keywords: keywords set, like set(['abc', 'def'])
         :return: a map of word bag name and intersection-set, like {'wordBagA': ['abc']}
         """
-        bag_word_list = list(word_bag.data & keywords)
-        for bag_word in bag_word_list:
-            print(hotWordCache.incr(bag_word))
         for i in word_bag.data:
             if i in keywords:
+                hotWordCache.incr(i)
                 return {word_bag.name: [i]}
         return {word_bag.name: []}
         # return {word_bag.name: list(word_bag.data & keywords)}
@@ -116,4 +117,5 @@ if __name__ == '__main__':
     bag = WordBag('wordBagA', data)
     keywords_set = {'abc', 'qwe', 'joke'}
     print(FastMatcher.match(bag, keywords_set))
-    # print(Matcher.match_all(keywords_set))
+    print(Matcher.match(bag, keywords_set))
+    print(FastMatcher.match_first({'meibai'}))

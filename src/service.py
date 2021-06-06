@@ -21,8 +21,8 @@ from matcher.Matcher import FastMatcher
 from hotword.HotWordCache import HotWordCache
 from tokenizer.Tokenizer import Tokenizer
 
-# ROOT_PATH = '../'
-ROOT_PATH = 'G:/T_WordMatch/wordMatcher'
+ROOT_PATH = '../'
+# ROOT_PATH = 'G:/T_WordMatch/wordMatcher'
 
 app = Flask(__name__)
 handler = TimedRotatingFileHandler(ROOT_PATH + '/log/word-matcher.log')
@@ -94,8 +94,8 @@ def load_word_bags():
 tokenizer = load_tokenizer()
 word_bags = load_word_bags()
 matcher = Matcher(word_bags)
-fastMacher = FastMatcher(word_bags)
-hotWordCache=HotWordCache(lifecycle=7,slot_name_prefix='group')
+fastMatcher = FastMatcher(word_bags)
+hotWordCache = HotWordCache(lifecycle=7, slot_name_prefix='group')
 
 
 @app.route('/reload', methods=['PUT'])
@@ -171,7 +171,8 @@ def fastmatch():
         text = request_body['text']
         keywords = set(tokenizer.cut(text))
         app.logger.debug("keywords:%s", keywords)
-        res = fastMacher.match_all(keywords)
+        res = fastMatcher.match_first(keywords)
+        print(res, 'res')
         app.logger.debug("res:%s", res)
         return jsonify({
             'status': 'success',
@@ -186,19 +187,19 @@ def fastmatch():
         }), 500
 
 
-@app.route('/topword', methods=['GET'])
+@app.route('/top', methods=['GET'])
 def topmatch():
     """
-    reload top tword
     :return: top n
     """
-    request.get()
-    app.logger.info("reloading top word .")
+    app.logger.info("look at top word .")
     try:
-        topWord=hotWordCache.top()
+        param = request.args.get("bool")
+        topWord = hotWordCache.top(with_score=param)
         app.logger.debug("topWord=:%s", topWord)
         return jsonify({
-            'top hot word': topWord,
+            'message': 'bool=' + param,
+            'top': topWord,
             'status': 'success'
         }), 200
     except Exception as e:
