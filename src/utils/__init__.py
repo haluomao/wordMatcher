@@ -1,6 +1,7 @@
-from src.zhtools.langconv import *
+#from src.zhtools.langconv import *
 import csv
-
+import sys
+sys.path.append(r'G:\T_WordMatch\wordMatcher\src\zhtools\langconv.py')
 
 def convent_to_simplified(sentence):
     """

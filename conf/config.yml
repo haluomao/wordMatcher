@@ -1,6 +1,7 @@
 
 app:
-  host: 0.0.0.0
+  #host: 0.0.0.0
+  host: 127.0.0.1
   port: 5000
 
 tokenizer: Jieba
@@ -12,6 +13,9 @@ word_bags:
 - name: A
   type: file
   content: /datasets/wordA.txt
+- name: B
+  type: file
+  content: /datasets/wordB.txt
 
 #- name: B
 #  type: url
