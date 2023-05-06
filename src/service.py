@@ -164,5 +164,20 @@ def check_worker_alive():
     }), 200
 
 
+@app.route('/abc', methods=['GET'])
+def test_get():
+    """
+    test get
+    usage:
+    http://localhost:5000/abc?test=1234
+    :return: a message.
+    """
+    param = request.args.get("test")
+    return jsonify({
+        'status': 'success',
+        'message': 'test=' + param
+    }), 200
+
+
 if __name__ == '__main__':
     app.run(yml_config['app']['host'], yml_config['app']['port'])
